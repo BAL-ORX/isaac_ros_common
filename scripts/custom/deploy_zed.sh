@@ -32,10 +32,15 @@ docker run --rm -it --gpus all --runtime=nvidia \
     -e ROS_DOMAIN_ID=1 \
     -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
     -e CYCLONEDDS_URI=/home/admin/cyclone_profile.xml \
+    -e RCUTILS_LOGGING_USE_STDOUT_LINE_BUFFERED=1 \
+    -e RCUTILS_LOGGING_SEVERITY_LEVEL=ERROR \
     -v /home/"$USER"/dev/orx/cyclone_profile.xml:/home/admin/cyclone_profile.xml \
     -v /dev/input:/dev/input \
     -v /tmp/:/tmp/ \
     -v "/usr/local/zed/settings:/usr/local/zed/settings" \
-    -v "/usr/local/zed/resources:/usr/local/zed/resources" \
+    -v "/usr/local/zed/resources:/usr/local/zed/resources" \ 
     -v "$config_path":/zed_mini_ros_config.yaml \
     girf/orx-middleware-isaac-ros-"$PLATFORM_NAME"-zed
+
+
+    # add this at the end of the deploy :   | grep -v "sl::getSensorsData error"
