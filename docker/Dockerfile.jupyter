@@ -13,9 +13,10 @@ FROM ${BASE_IMAGE}
 ### jupyter/docker-stacks-foundation Dockerfile ###
 ###########################################################################################
 
+# use jovyan username for consistency but host user ID from `id -u` and group ID from `id -g`
 ARG NB_USER="jovyan"
-ARG NB_UID="1000"
-ARG NB_GID="100"
+ARG NB_UID="1001"  
+ARG NB_GID="1001"
 ARG JUPYTER_DOCKER_STACKS_DIR="jupyter_docker_stacks_files"
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
@@ -30,7 +31,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update --yes && \
     # - `apt-get upgrade` is run to patch known vulnerabilities in system packages
     #   as the Ubuntu base image is rebuilt too seldom sometimes (less than once a month)
-    apt-get upgrade --yes && \
+    # apt-get upgrade --yes --allow-downgrades && \
     apt-get install --yes --no-install-recommends \
     # - bzip2 is necessary to extract the micromamba executable.
     bzip2 \
@@ -138,9 +139,9 @@ RUN set -x && \
     # Pin major.minor version of python
     # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
     mamba list --full-name 'python' | awk 'END{sub("[^.]*$", "*", $2); print $1 " " $2}' >> "${CONDA_DIR}/conda-meta/pinned" && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+    mamba clean --all -f -y 
+    # fix-permissions "${CONDA_DIR}" && \
+    # fix-permissions "/home/${NB_USER}"
 
 # Copy local files as late as possible to avoid cache busting
 COPY "${JUPYTER_DOCKER_STACKS_DIR}/run-hooks.sh" "${JUPYTER_DOCKER_STACKS_DIR}/start.sh" /usr/local/bin/
@@ -205,9 +206,9 @@ RUN mamba install --yes \
     mamba clean --all -f -y && \
     npm cache clean --force && \
     jupyter lab clean && \
-    rm -rf "/home/${NB_USER}/.cache/yarn" && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+    rm -rf "/home/${NB_USER}/.cache/yarn"
+    # fix-permissions "${CONDA_DIR}" && \
+    # fix-permissions "/home/${NB_USER}"
 
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
@@ -279,3 +280,6 @@ COPY --chown=${NB_UID}:${NB_GID} "${JUPYTER_DOCKER_STACKS_DIR}/Rprofile.site" /o
 
 # Add setup scripts that may be used by downstream images or inherited images
 COPY "${JUPYTER_DOCKER_STACKS_DIR}/setup-scripts/" /opt/setup-scripts/
+
+# Revert to root user
+USER root

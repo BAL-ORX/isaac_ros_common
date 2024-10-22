@@ -276,16 +276,28 @@ print_info "Running $CONTAINER_NAME"
 if [[ $VERBOSE -eq 1 ]]; then
     set -x
 fi
+# docker run -it --rm \
+#     --privileged \
+#     --network host \
+#     ${DOCKER_ARGS[@]} \
+#     -v $ISAAC_ROS_DEV_DIR:/workspaces/isaac_ros-dev \
+#     -v /etc/localtime:/etc/localtime:ro \
+#     --name "$CONTAINER_NAME" \
+#     --runtime nvidia \
+#     --user="admin" \
+#     --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
+#     --workdir /workspaces/isaac_ros-dev \
+#     $BASE_NAME \
+#     /bin/bash
 docker run -it --rm \
     --privileged \
     --network host \
     ${DOCKER_ARGS[@]} \
-    -v $ISAAC_ROS_DEV_DIR:/workspaces/isaac_ros-dev \
+    -v $ISAAC_ROS_DEV_DIR:/home/jovyan/work/isaac_ros-dev \
     -v /etc/localtime:/etc/localtime:ro \
     --name "$CONTAINER_NAME" \
     --runtime nvidia \
-    --user="admin" \
-    --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
-    --workdir /workspaces/isaac_ros-dev \
+    --user="jovyan" \
+    --workdir /home/jovyan/work/isaac_ros-dev \
     $BASE_NAME \
     /bin/bash
