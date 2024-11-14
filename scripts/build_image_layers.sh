@@ -275,9 +275,10 @@ if [[ $SKIP_REGISTRY_CHECK -eq 0 && -z "${BASE_IMAGE_NAME}" ]]; then
 fi
 
 # Arguments for docker build
-BUILD_ARGS+=("--build-arg" "USERNAME="admin"")
-BUILD_ARGS+=("--build-arg" "USER_UID=`id -u`")
-BUILD_ARGS+=("--build-arg" "USER_GID=`id -g`")
+# Same arguments as in jupyter layer
+BUILD_ARGS+=("--build-arg" "USERNAME="jovyan"")
+BUILD_ARGS+=("--build-arg" "USER_UID=1001")
+BUILD_ARGS+=("--build-arg" "USER_GID=1001")
 BUILD_ARGS+=("--build-arg" "PLATFORM=$PLATFORM")
 
 for BUILD_ARG in ${ADDITIONAL_BUILD_ARGS[@]}
