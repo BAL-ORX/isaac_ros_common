@@ -12,7 +12,7 @@ else
 fi
 
 # Set default absolute path for the config file
-default_config_path="/home/$USER/dev/orx/data/experiment_config/datahub_01/zed_x_mini_0"
+default_config_path="/home/$USER/dev/orx/data/experiment_config/datahub_01/intel_realsense_d405_0"
 
 # Use the first argument as the config path, or the specified default path
 config_path="${1:-$default_config_path}"
@@ -29,15 +29,13 @@ docker run --rm -it --gpus all --runtime=nvidia \
     --name $docker_name \
     --privileged \
     --network host \
+    --cpus 4 \
     -e ROS_DOMAIN_ID=1 \
     -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
     -e CYCLONEDDS_URI=/home/admin/cyclone_profile.xml \
     -v /home/"$USER"/dev/orx/cyclone_profile.xml:/home/admin/cyclone_profile.xml \
     -v /dev/input:/dev/input \
-    -v /tmp/:/tmp/ \
-    -v "/usr/local/zed/settings:/usr/local/zed/settings" \
-    -v "/usr/local/zed/resources:/usr/local/zed/resources" \
-    -v "$config_path":/zed_mini_ros_config.yaml \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    vschorp98/orx-middleware-isaac-ros-"$PLATFORM_NAME"-zed
+    -v "$config_path":/intel_realsense_d405_ros_config.yaml \
+    vschorp98/orx-middleware-isaac-ros-"$PLATFORM_NAME"-realsense_d405
