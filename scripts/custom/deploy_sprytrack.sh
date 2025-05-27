@@ -12,32 +12,26 @@ else
 fi
 
 # Set default absolute path for the config file
-default_config_path="/home/balgrist/dev/orx/data/experiment_config/datahub_01/azure_kinect_1"
+default_config_path="/home/balgrist/dev/orx/data/experiment_config/datahub_01/atracsys_sprytrack300_0"
 
 # Use the first argument as the config path, or the specified default path
 config_path="${1:-$default_config_path}"
 
-# Check if the config file exists
-if [ ! -f "$config_path" ]; then
-    echo "Configuration file not found at: $config_path"
+# Check if the config dir exists
+if [ ! -d "$config_path" ]; then
+    echo "Configuration dir not found at: $config_path"
     exit 1
 fi
 
 docker_name=$(basename ${config_path})
 
-docker run -it --rm --gpus 'all' --runtime=nvidia \
+docker run --rm -it --gpus all --runtime=nvidia \
+    --name $docker_name \
     --privileged \
     --network host \
-    --cpus 4 \
     -e ROS_DOMAIN_ID=1 \
-    -v /dev:/dev \
+    -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
     -e CYCLONEDDS_URI=/home/admin/cyclone_profile.xml \
     -v /home/"$USER"/dev/orx/cyclone_profile.xml:/home/admin/cyclone_profile.xml \
-    -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
-    -e CONFIG_PATH=/azure_kinect_1 \
-    -v "$config_path":/azure_kinect_1 \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    --name $docker_name \
-    girf/orx-middleware-isaac-ros-"$PLATFORM_NAME"-kinect
-    
+    -v "$config_path":/home/admin/atracsys_sprytrack300_0/ \
+    vschorp98/orx-middleware-isaac-ros-"$PLATFORM_NAME"-sprytrack

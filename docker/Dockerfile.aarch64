@@ -242,8 +242,9 @@ apt-add-repository ppa:mosquitto-dev/mosquitto-ppa \
         mosquitto-clients
 
 # Install jtop
-RUN python3 -m pip install -U \
-    jetson-stats
+RUN python3 -m pip install --upgrade pip wheel && \
+    python3 -m pip install "setuptools<68" && \
+    python3 -m pip install -U jetson-stats
 
 # Store list of packages (must be last)
 RUN mkdir -p /opt/nvidia/isaac_ros_dev_base && dpkg-query -W | sort > /opt/nvidia/isaac_ros_dev_base/aarch64-end-packages.csv

@@ -129,7 +129,10 @@ apt-get update && apt-get install -y \
 # Setup rosdep
 COPY rosdep/extra_rosdeps.yaml /etc/ros/rosdep/sources.list.d/nvidia-isaac.yaml
 RUN --mount=type=cache,target=/var/cache/apt \
-    rosdep init \
+    if [ -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then \
+        rm /etc/ros/rosdep/sources.list.d/20-default.list; \   
+    fi \ 
+    && rosdep init \
     && echo "yaml file:///etc/ros/rosdep/sources.list.d/nvidia-isaac.yaml" | tee /etc/ros/rosdep/sources.list.d/00-nvidia-isaac.list \
     && sed -i 's|gbpdistro https://raw.githubusercontent.com/ros/rosdistro/master/releases/fuerte.yaml fuerte||g' /etc/ros/rosdep/sources.list.d/20-default.list \
     && rosdep update
