@@ -42,4 +42,4 @@ RUN . /opt/ros/humble/setup.sh && colcon build && source install/setup.bash
 # RUN sudo chown -R admin:admin /workspaces/isaac_ros-dev/install/azure_kinect_ros_driver && \
 #     chmod -R 755 /workspaces/isaac_ros-dev/install/azure_kinect_ros_driver
     
-USER root
+USER admin

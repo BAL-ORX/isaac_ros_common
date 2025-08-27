@@ -1,0 +1,2 @@
+# Turntable udev rules for Leaflabs Maple serial interface
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1eaf", ATTRS{idProduct}=="0004", MODE="0666"
