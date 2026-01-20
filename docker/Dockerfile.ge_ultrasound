@@ -1,0 +1,40 @@
+# Copyright (c) 2023, NVIDIA CORPORATION.  All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto.  Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+
+ARG BASE_IMAGE=ubuntu:22.04
+FROM ${BASE_IMAGE}
+
+# Ensure a sufficiently new CMake to satisfy the AppAPI requirements.
+# Uses pip so it works even if the base image pins an older Ubuntu CMake.
+ARG CMAKE_PIP_SPEC=>=3.26
+RUN python3 -m pip install -U "cmake${CMAKE_PIP_SPEC}"
+
+
+# Install build dependencies for GLFW
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y \
+	libwayland-dev \
+	libxkbcommon-dev \
+    xorg-dev 
+
+# Download, build, and install GLFW 3.4
+WORKDIR /tmp
+RUN wget -q https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip \
+	&& unzip glfw-3.4.zip \
+	&& cd glfw-3.4 \
+	&& cmake -S . -B build -DBUILD_SHARED_LIBS=ON \
+	&& cmake --build build \
+	&& cmake --install build \
+	&& cd /tmp \
+	&& rm -rf glfw-3.4 glfw-3.4.zip
+
+# Set LD_LIBRARY_PATH for custom libraries
+ENV LD_LIBRARY_PATH="/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/HostSupport/Linux:/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/HostLoader/Linux:/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/GlCtxMgmt/Linux:${LD_LIBRARY_PATH}"
+
+# Set XDG_RUNTIME_DIR to avoid warnings for graphical/desktop apps
+ENV XDG_RUNTIME_DIR=/tmp/runtime
+RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime

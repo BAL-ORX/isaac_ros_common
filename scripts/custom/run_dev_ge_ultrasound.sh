@@ -1,0 +1,1 @@
+./../run_dev.sh -i ros2_humble.ge_ultrasound  -a "-v /home/$USER/dev/orx/data/experiment_config/datahub_01/ge_ultrasound_config:/home/admin/ge_ultrasound_config"
