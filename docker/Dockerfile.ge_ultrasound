@@ -35,6 +35,11 @@ RUN wget -q https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.zip \
 # Set LD_LIBRARY_PATH for custom libraries
 ENV LD_LIBRARY_PATH="/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/HostSupport/Linux:/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/HostLoader/Linux:/workspaces/isaac_ros-dev/src/ge_ultrasound/packages/lib/GlCtxMgmt/Linux:${LD_LIBRARY_PATH}"
 
+# Install Qt5 dependencies, the GUI is necessary to enter ID and pin
+RUN apt-get update && apt-get install -y \
+    qtbase5-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set XDG_RUNTIME_DIR to avoid warnings for graphical/desktop apps
-ENV XDG_RUNTIME_DIR=/tmp/runtime
-RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
+# ENV XDG_RUNTIME_DIR=/tmp/runtime
+# RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
