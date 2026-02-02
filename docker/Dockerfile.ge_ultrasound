@@ -41,5 +41,5 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Set XDG_RUNTIME_DIR to avoid warnings for graphical/desktop apps
-# ENV XDG_RUNTIME_DIR=/tmp/runtime
-# RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
+ENV XDG_RUNTIME_DIR=/tmp/runtime
+RUN mkdir -p /tmp/runtime && chmod 700 /tmp/runtime
