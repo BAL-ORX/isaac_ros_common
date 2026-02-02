@@ -35,4 +35,4 @@ docker run --rm -it --gpus all --runtime=nvidia \
     -e CYCLONEDDS_URI=/home/admin/cyclone_profile.xml \
     -v /home/"$USER"/dev/orx/cyclone_profile.xml:/home/admin/cyclone_profile.xml \
     -v "$config_path":/home/admin/ge_ultrasound_config \
-    girf/orx-middleware-isaac-ros-"$PLATFORM_NAME"-ge_ultrasound
+    girf/orx-middleware-isaac-ros-"$PLATFORM_NAME"-ge-ultrasound
