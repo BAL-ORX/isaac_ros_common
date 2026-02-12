@@ -1,0 +1,1 @@
+./../run_dev.sh -i ros2_humble  -a "-v /home/$USER/dev/orx/data/experiment_config/datahub_01/clarius_config:/home/admin/clarius_config"
