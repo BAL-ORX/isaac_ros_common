@@ -11,6 +11,16 @@ else
     exit 1
 fi
 
+HOSTNAME="$(hostname -s | tr -d '[:space:]')"
+if [[ "$HOSTNAME" =~ ([0-9]+)$ ]]; then
+    hub_id="${BASH_REMATCH[1]}"   # e.g. "09"
+    hub_num=$((10#$hub_id))
+    SELF_DATAHUB=$(printf 'datahub_%02d' "$hub_num")
+else
+    echo "Cannot infer datahub id from hostname '$HOSTNAME', using hostname as SELF_DATAHUB"
+    SELF_DATAHUB="$HOSTNAME"
+fi
+
 # Set default absolute path for the config file
 default_config_path="/home/$USER/dev/orx/us_server_config/config.yaml"
 

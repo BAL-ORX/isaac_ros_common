@@ -11,8 +11,18 @@ else
     exit 1
 fi
 
+HOSTNAME="$(hostname -s | tr -d '[:space:]')"
+if [[ "$HOSTNAME" =~ ([0-9]+)$ ]]; then
+    hub_id="${BASH_REMATCH[1]}"   # e.g. "09"
+    hub_num=$((10#$hub_id))
+    SELF_DATAHUB=$(printf 'datahub_%02d' "$hub_num")
+else
+    echo "Cannot infer datahub id from hostname '$HOSTNAME', using hostname as SELF_DATAHUB"
+    SELF_DATAHUB="$HOSTNAME"
+fi
+
 # Set default absolute path for the config file
-default_config_path="/home/$USER/dev/orx/data/experiment_config/datahub_01/ge_ultrasound_config"
+default_config_path="/home/$USER/dev/orx/data/experiment_config/$SELF_DATAHUB/ge_ultrasound_config"
 
 # Use the first argument as the config path, or the specified default path
 config_path="${1:-$default_config_path}"

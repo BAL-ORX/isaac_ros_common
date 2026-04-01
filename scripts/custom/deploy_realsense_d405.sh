@@ -15,13 +15,12 @@ fi
 HOSTNAME="$(hostname -s | tr -d '[:space:]')"
 if [[ "$HOSTNAME" =~ ([0-9]+)$ ]]; then
     hub_id="${BASH_REMATCH[1]}"   # e.g. "09"
+    hub_num=$((10#$hub_id))
+    SELF_DATAHUB=$(printf 'datahub_%02d' "$hub_num")
 else
-    echo "Cannot infer datahub id from hostname '$HOSTNAME' (expected trailing digits)"
-    exit 1
+    echo "Cannot infer datahub id from hostname '$HOSTNAME', using hostname as SELF_DATAHUB"
+    SELF_DATAHUB="$HOSTNAME"
 fi
-
-hub_num=$((10#$hub_id))
-SELF_DATAHUB=$(printf 'datahub_%02d' "$hub_num")
 
 # Set default absolute path for the config file (now dynamic)
 default_config_path="/home/$USER/dev/orx/data/experiment_config/${SELF_DATAHUB}/intel_realsense_d405_0"
@@ -44,7 +43,7 @@ docker run --rm -it --gpus all --runtime=nvidia \
     --name "$docker_name" \
     --privileged \
     --network host \
-    --cpus 4 \
+    --cpus 8 \
     -e ROS_DOMAIN_ID=1 \
     -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
     -e CYCLONEDDS_URI=/home/admin/cyclone_profile.xml \
