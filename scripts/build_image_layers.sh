@@ -40,6 +40,11 @@ if [[ -f ~/.isaac_ros_common-config ]]; then
     . ~/.isaac_ros_common-config
 fi
 
+# Override with config from current working dir if exists
+if [[ -f ./.isaac_ros_common-config ]]; then
+    . ./.isaac_ros_common-config
+fi
+
 # Prepend configured docker search dirs
 if [ ${#CONFIG_DOCKER_SEARCH_DIRS[@]} -gt 0 ]; then
     for (( i=${#CONFIG_DOCKER_SEARCH_DIRS[@]}-1 ; i>=0 ; i-- )); do
@@ -248,7 +253,8 @@ if [[ $SKIP_REGISTRY_CHECK -eq 0 && -z "${BASE_IMAGE_NAME}" ]]; then
             BASE_DOCKER_REGISTRY_NAME=${BASE_DOCKER_REGISTRY_NAMES[j]}
             BASE_IMAGE_TAG=${BASE_IMAGE_KEYS[*]}
             BASE_IMAGE_TAG=${BASE_IMAGE_TAG// /.}
-            BASE_IMAGE_FULLNAME="${BASE_DOCKER_REGISTRY_NAME}:${BASE_IMAGE_TAG//./-}_${SOURCE_DOCKERFILE_HASH}"
+            BASE_IMAGE_FULLNAME="${BASE_DOCKER_REGISTRY_NAME}/${BASE_IMAGE_TAG//./-}"
+            # BASE_IMAGE_FULLNAME="${BASE_DOCKER_REGISTRY_NAME}:${BASE_IMAGE_TAG//./-}_${SOURCE_DOCKERFILE_HASH}"
             BASE_IMAGE_FULLNAMES+=(${BASE_IMAGE_FULLNAME})
 
             # Remember which index goes with this base image so we can skip those Dockerfiles

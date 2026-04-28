@@ -31,6 +31,11 @@ if [[ -f ~/.isaac_ros_common-config ]]; then
     . ~/.isaac_ros_common-config
 fi
 
+# Override with config from current working dir if exists
+if [[ -f ./.isaac_ros_common-config ]]; then
+    . ./.isaac_ros_common-config
+fi
+
 INCLUDE_DIRS=()
 INCLUDE_TARBALLS=()
 SET_LAUNCH_CMD=0
@@ -186,7 +191,6 @@ function cleanup {
 trap cleanup EXIT
 
 pushd . >/dev/null
-cd $ROOT
 ON_EXIT+=("popd")
 
 # Setup staging temp directory
@@ -195,6 +199,15 @@ ON_EXIT+=("rm -Rf ${TEMP_DIR}")
 
 pushd . >/dev/null
 ON_EXIT+=("popd")
+
+# copy over config file, if it exists, so build_image_layers.sh can source it
+if [[ -f ./.isaac_ros_common-config ]]; then
+    cp ./.isaac_ros_common-config ${TEMP_DIR}
+fi 
+# copy over .devcontainer, if it exists
+if [[ -d ./.devcontainer ]]; then
+    cp -r ./.devcontainer ${TEMP_DIR}/.devcontainer
+fi 
 
 cd $TEMP_DIR
 cp -f $ROOT/deploy/_Dockerfile.deploy ${TEMP_DIR}/Dockerfile.deploy

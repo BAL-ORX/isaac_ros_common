@@ -33,6 +33,11 @@ if [[ -f ~/.isaac_ros_common-config ]]; then
     . ~/.isaac_ros_common-config
 fi
 
+# Override with config from current working dir if exists
+if [[ -f ./.isaac_ros_common-config ]]; then
+    . ./.isaac_ros_common-config
+fi
+
 # Parse command-line args
 IMAGE_KEY=ros2_humble
 
