@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 xhost +
@@ -11,14 +10,11 @@ DOCKER_USER="admin"
 if [[ $PLATFORM == "aarch64" ]]; then
     PLATFORM_NAME="jetson"
 elif [[ $PLATFORM == "x86_64" ]]; then
-    if [[ $USER_ID == 1001 ]]; then
-        PLATFORM_NAME="desktop"
-    elif [[ $USER_ID == 1003 ]]; then
+    if [[ $USER_ID == 1003 ]]; then
         PLATFORM_NAME="dgx"
         DOCKER_USER="orx_user"
     else
-        echo "Unsupported user id: $USER_ID"
-        exit 1
+        PLATFORM_NAME="desktop"
     fi
 else
     echo "Unsupported platform: $PLATFORM"
